@@ -3,6 +3,7 @@ local std = require "lib.std"
 local ResourceManager = require "engine.resources"
 local scenes = require "engine.scenes"
 local screen = require "engine.screen"
+local Input = require "engine.input"
 
 --[[
     GameState
@@ -15,8 +16,7 @@ function GameState:new()
 end
 
 function GameState:init()
-    self.input = std.Input()
-    self.inputOld = std.wasx.new(1)
+    self.input = Input()
     self.resources = ResourceManager()
     self.sceneManager = scenes.SceneManager()
     self.screen = screen.Screen(1.0, { red = 0.2, green = 0.2, blue = 0.2, alpha = 1.0 })

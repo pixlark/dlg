@@ -1,30 +1,26 @@
-local Object = require "lib.vendored.classic"
-local lume = require "lib.vendored.lume"
-local Vector = require "lib.vendored.vector"
-
-local except = require "lib.local.exceptions"
+local std = require "lib.std"
 
 local function uniqueInsert(tbl, x)
-    if not lume.any(tbl, function(y) return x == y end) then
+    if not std.lume.any(tbl, function(y) return x == y end) then
         table.insert(tbl, x)
     end
 end
 
-local KeyTrigger = Object:extend()
+local KeyTrigger = std.Object:extend()
 
 function KeyTrigger:new(key, value)
     self.key = key
     self.value = value
 end
 
-local KeyStick = Object:extend()
+local KeyStick = std.Object:extend()
 
 function KeyStick:new(key, value)
     self.key = key
     self.value = value
 end
 
-local Input = Object:extend()
+local Input = std.Object:extend()
 
 function Input:new()
     -- maps bindings -> controller buttons
@@ -212,7 +208,7 @@ function Input:trigger(name)
 end
 
 function Input:stick(name)
-    local dir = Vector.new(0, 0)
+    local dir = std.Vector.new(0, 0)
 
     if self.keySticks[name] ~= nil then
         for key, value in pairs(self.keySticks[name]) do
@@ -234,7 +230,7 @@ function Input:stick(name)
                     error()
                 end
 
-                local axesValue = Vector.new(
+                local axesValue = std.Vector.new(
                     joystick:getGamepadAxis(axes[1]),
                     joystick:getGamepadAxis(axes[2])
                 )

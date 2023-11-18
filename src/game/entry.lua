@@ -184,7 +184,6 @@ end
 
 function love.update(dt)
     Game.input:update(dt)
-    Game.inputOld:updateData(dt)
     Game.sceneManager:update(dt)
 end
 

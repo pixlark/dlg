@@ -10,14 +10,12 @@ local inspect    = require "lib.forked.inspect"
 std.Bounds       = require "lib.local.Bounds"
 local decorators = require "lib.local.decorators"
 local exceptions = require "lib.local.exceptions"
-std.Input        = require "lib.local.input"
 
 -- Vendored libraries
 std.copy         = require "lib.vendored.copy"
 std.lume         = require "lib.vendored.lume"
 std.Object       = require "lib.vendored.classic"
 std.Vector       = require "lib.vendored.vector"
-std.wasx         = require "lib.vendored.Wasx"
 
 function std.inspect(...)
     local function process(value)
