@@ -23,17 +23,11 @@ end
 local Input = std.Object:extend()
 
 function Input:new()
-    -- maps bindings -> controller buttons
     self.controllerButtons = {}
-    -- maps bindings -> key buttons
     self.keyButtons = {}
-    -- maps bindings -> controller triggers
     self.controllerTriggers = {}
-    -- maps bindings -> array({ key button, value })
     self.keyTriggers = {}
-    -- maps bindings -> controller sticks
     self.controllerSticks = {}
-    -- maps bindings -> array({ key button, { x, y } })
     self.keySticks = {}
 
     self.deadzones = {
@@ -49,17 +43,12 @@ function Input:new()
 end
 
 function Input:update(dt)
+    -- Add update logic here if needed
 end
 
---
--- Create bindings
---
-
+-- Bind a key to a KeyButton
 function Input:bindKeyButton(name, key)
-    do
-        assert(type(name) == "string")
-        assert(type(key) == "string")
-    end
+    assert(type(name) == "string" and type(key) == "string")
 
     if self.keyButtons[name] == nil then
         self.keyButtons[name] = {}
@@ -68,11 +57,9 @@ function Input:bindKeyButton(name, key)
     uniqueInsert(self.keyButtons[name], key)
 end
 
+-- Bind a controller button to a KeyButton
 function Input:bindControllerButton(name, button)
-    do
-        assert(type(name) == "string")
-        assert(type(button) == "string")
-    end
+    assert(type(name) == "string" and type(button) == "string")
 
     if self.controllerButtons[name] == nil then
         self.controllerButtons[name] = {}
@@ -81,65 +68,51 @@ function Input:bindControllerButton(name, button)
     uniqueInsert(self.controllerButtons[name], button)
 end
 
+-- Bind a key to a KeyTrigger
 function Input:bindKeyTrigger(name, key, value)
-    do
-        assert(type(name) == "string")
-        assert(type(key) == "string")
-        assert(type(value) == "number")
-    end
+    assert(type(name) == "string" and type(key) == "string" and type(value) == "number")
 
     if self.keyTriggers[name] == nil then
         self.keyTriggers[name] = {}
     end
 
-    self.keyTriggers[name][key] = value
+    table.insert(self.keyTriggers[name], KeyTrigger(key, value))
 end
 
+-- Bind a controller button to a KeyTrigger
 function Input:bindControllerTrigger(name, trigger)
-    do
-        assert(type(name) == "string")
-        assert(type(trigger) == "string")
-        assert(trigger == "left" or trigger == "right")
-    end
+    assert(type(name) == "string" and type(trigger) == "string" and (trigger == "left" or trigger == "right"))
 
     if self.controllerTriggers[name] == nil then
         self.controllerTriggers[name] = {}
     end
 
-    uniqueInsert(self.controllerTriggers[name], trigger)
+    table.insert(self.controllerTriggers[name], trigger)
 end
 
+-- Bind a key to a KeyStick
 function Input:bindKeyStick(name, key, value)
-    do
-        assert(type(name) == "string")
-        assert(type(key) == "string")
-        assert(type(value) == "table")
-    end
+    assert(type(name) == "string" and type(key) == "string" and type(value) == "table")
 
     if self.keySticks[name] == nil then
         self.keySticks[name] = {}
     end
 
-    self.keySticks[name][key] = value
+    table.insert(self.keySticks[name], KeyStick(key, value))
 end
 
+-- Bind a controller stick to a KeyStick
 function Input:bindControllerStick(name, stick)
-    do
-        assert(type(name) == "string")
-        assert(type(stick) == "string")
-        assert(stick == "left" or stick == "right")
-    end
+    assert(type(name) == "string" and type(stick) == "string" and (stick == "left" or stick == "right"))
 
     if self.controllerSticks[name] == nil then
         self.controllerSticks[name] = {}
     end
 
-    uniqueInsert(self.controllerSticks[name], stick)
+    table.insert(self.controllerSticks[name], stick)
 end
 
---
 -- Test bindings
---
 
 local mouseKeys = {
     mouse1 = 1,
@@ -177,9 +150,9 @@ end
 
 function Input:trigger(name)
     if self.keyTriggers[name] ~= nil then
-        for key, value in pairs(self.keyTriggers[name]) do
-            if self:_keyDown(key) then
-                return value
+        for _, keyTrigger in ipairs(self.keyTriggers[name]) do
+            if self:_keyDown(keyTrigger.key) then
+                return keyTrigger.value
             end
         end
     end
@@ -211,9 +184,9 @@ function Input:stick(name)
     local dir = std.Vector.new(0, 0)
 
     if self.keySticks[name] ~= nil then
-        for key, value in pairs(self.keySticks[name]) do
-            if self:_keyDown(key) then
-                dir = dir + value
+        for _, keyStick in ipairs(self.keySticks[name]) do
+            if self:_keyDown(keyStick.key) then
+                dir = dir + std.Vector.new(keyStick.value[1], keyStick.value[2])
             end
         end
     end
